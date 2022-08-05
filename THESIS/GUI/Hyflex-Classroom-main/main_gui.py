@@ -2,8 +2,8 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 root = tk.Tk()
-root.title('Assistant Robot')
-'''root.iconbitmap('')'''
+root.title('HyFlex Class Portal')
+root.iconbitmap('Images/icon.ico')
 
 # Window Position
 win_width, win_height = 800, 535
