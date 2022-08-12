@@ -7,8 +7,8 @@ import subprocess as sp
 
 sp.Popen(['python', 'get_data.py'])
 
-x = np.load('x_data.npy')
-y = np.load('y_data.npy')
+x = np.load('x_data.npy', allow_pickle=True)
+y = np.load('y_data.npy', allow_pickle=True)
 
 def get_x_y():
     y = np.load('y_data.npy')

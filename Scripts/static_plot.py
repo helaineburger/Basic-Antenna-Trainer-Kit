@@ -5,8 +5,8 @@ import numpy as np
 from matplotlib.animation import FuncAnimation
 import subprocess as sp
 
-x = np.load('x_data.npy')
-y = np.load('y_data.npy')
+x = np.load('x_data.npy', allow_pickle=True)
+y = np.load('y_data.npy', allow_pickle=True)
 
 fig = plt.figure()
 fig.canvas.manager.set_window_title('Frequency Spectrum')
