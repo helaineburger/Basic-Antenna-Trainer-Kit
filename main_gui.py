@@ -37,6 +37,16 @@ classroom_img_1_load = ImageTk.PhotoImage(classroom_img_1)
 classroom_img_2 = Image.open('Images/classroom_btn_2.png').convert('RGBA')
 classroom_img_2_load = ImageTk.PhotoImage(classroom_img_2)
 
+laboratory_img_1 = Image.open('Images/laboratory_btn_1.png')
+laboratory_img_1_load = ImageTk.PhotoImage(laboratory_img_1)
+laboratory_img_2 = Image.open('Images/laboratory_btn_2.png').convert('RGBA')
+laboratory_img_2_load = ImageTk.PhotoImage(laboratory_img_2)
+
+courses_img_1 = Image.open('Images/courses_btn_1.png')
+courses_img_1_load = ImageTk.PhotoImage(courses_img_1)
+courses_img_2 = Image.open('Images/courses_btn_2.png').convert('RGBA')
+courses_img_2_load = ImageTk.PhotoImage(courses_img_2)
+
 leftframe_img = Image.open('Images/leftframe.png')
 leftframe_img_load = ImageTk.PhotoImage(leftframe_img)
 
@@ -48,14 +58,37 @@ left_main_bg = tk.Label(left_frame, image=leftframe_img_load, width=569, height=
 left_main_bg.grid(row=0)
 
 def cm_b_click(clicked):
+    
     classroom_btn['image'] = classroom_img_2_load
 def cm_b_rel(released):
     classroom_btn['image'] = classroom_img_1_load
-    
-classroom_btn = tk.Button(left_frame, image=classroom_img_1_load, text='CLASSROOM', width=154, height=46, borderwidth=0, bg = "White",  relief=tk.SUNKEN, highlightthickness=0)
+
+
+classroom_btn = tk.Button(left_frame, image=classroom_img_1_load, text='CLASSROOM', width=154, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
 classroom_btn.grid(row=0, padx=(0,275), pady=(360,0))
 classroom_btn.bind('<Button-1>', cm_b_click)
 classroom_btn.bind('<ButtonRelease>', cm_b_rel)
+
+def lb_b_click(clicked):
+    laboratory_btn['image'] = laboratory_img_2_load
+def lb_b_rel(released):
+    laboratory_btn['image'] = laboratory_img_1_load
+
+laboratory_btn = tk.Button(left_frame, image=laboratory_img_1_load, text='LABORATORY', width=142, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)#
+laboratory_btn.grid(row=0, padx=(25,0), pady=(360,0))
+laboratory_btn.bind('<Button-1>', lb_b_click)
+laboratory_btn.bind('<ButtonRelease>', lb_b_rel)
+
+def cr_b_click(clicked):
+    courses_btn['image'] = courses_img_2_load
+def cr_b_rel(released):
+    courses_btn['image'] = courses_img_1_load
+
+courses_btn = tk.Button(left_frame, image=courses_img_1_load, text='COURSES', width=127, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)#
+courses_btn.grid(row=0, padx=(299
+                              ,0), pady=(360,0))
+courses_btn.bind('<Button-1>', cr_b_click)
+courses_btn.bind('<ButtonRelease>', cr_b_rel)
 
 # Right Frame Widgets
 right_main_bg = tk.Label(right_frame, image=rightframe_img_load, width=191, height=514)
