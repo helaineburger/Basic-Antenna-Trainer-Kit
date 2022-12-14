@@ -85,13 +85,23 @@ def cr_b_rel(released):
     courses_btn['image'] = courses_img_1_load
 
 courses_btn = tk.Button(left_frame, image=courses_img_1_load, text='COURSES', width=127, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)#
-courses_btn.grid(row=0, padx=(299
-                              ,0), pady=(360,0))
+courses_btn.grid(row=0, padx=(299,0), pady=(360,0))
 courses_btn.bind('<Button-1>', cr_b_click)
 courses_btn.bind('<ButtonRelease>', cr_b_rel)
 
 # Right Frame Widgets
 right_main_bg = tk.Label(right_frame, image=rightframe_img_load, width=191, height=514)
 right_main_bg.grid(row=0)
+
+def ok_b_click(clicked):
+    
+    set_btn['image'] = set_img_2_load
+def ok_b_rel(released):
+    set_btn['image'] = set_img_1_load
+
+set_btn = tk.Button(right_frame, image=set_img_1_load, text='SET', width=154, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)#
+set_btn.grid(row=0, padx=(25,0), pady=(360,0))
+set_btn.bind('<Button-1>', ok_b_click)
+set_btn.bind('<ButtonRelease>', ok_b_rel)
 
 root.mainloop()
