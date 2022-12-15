@@ -104,8 +104,8 @@ def ok_b_click(clicked):
 def ok_b_rel(released):
     set_btn['image'] = set_img_1_load
 
-set_btn = tk.Button(right_frame, image=set_img_1_load, text='SET', width=154, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
-set_btn.grid(row=0, padx=(0,0), pady=(0,0))
+set_btn = tk.Button(right_frame, image=set_img_1_load, text='SET', width=125, height=32, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
+set_btn.grid(row=0, padx=(0,0), pady=(330,0))
 set_btn.bind('<Button-1>', ok_b_click)
 set_btn.bind('<ButtonRelease>', ok_b_rel)
 
