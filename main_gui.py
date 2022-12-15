@@ -1,5 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+import webbrowser
 
 root = tk.Tk()
 root.title('HyFlex Class Portal')
@@ -63,8 +64,8 @@ left_main_bg = tk.Label(left_frame, image=leftframe_img_load, width=569, height=
 left_main_bg.grid(row=0)
 
 def cm_b_click(clicked):
-    
     classroom_btn['image'] = classroom_img_2_load
+    webbrowser.open('meet.google.com')
 def cm_b_rel(released):
     classroom_btn['image'] = classroom_img_1_load
 
@@ -85,6 +86,7 @@ laboratory_btn.bind('<ButtonRelease>', lb_b_rel)
 
 def cr_b_click(clicked):
     courses_btn['image'] = courses_img_2_load
+    webbrowser.open('lsu.instructure.com/courses')
 def cr_b_rel(released):
     courses_btn['image'] = courses_img_1_load
 
