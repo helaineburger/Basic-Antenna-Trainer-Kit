@@ -68,7 +68,6 @@ def cm_b_click(clicked):
 def cm_b_rel(released):
     classroom_btn['image'] = classroom_img_1_load
 
-
 classroom_btn = tk.Button(left_frame, image=classroom_img_1_load, text='CLASSROOM', width=154, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
 classroom_btn.grid(row=0, padx=(0,275), pady=(360,0))
 classroom_btn.bind('<Button-1>', cm_b_click)
@@ -98,8 +97,7 @@ courses_btn.bind('<ButtonRelease>', cr_b_rel)
 right_main_bg = tk.Label(right_frame, image=rightframe_img_load, width=191, height=514)
 right_main_bg.grid(row=0)
 
-def ok_b_click(clicked):
-    
+def ok_b_click(clicked): 
     set_btn['image'] = set_img_2_load
 def ok_b_rel(released):
     set_btn['image'] = set_img_1_load
