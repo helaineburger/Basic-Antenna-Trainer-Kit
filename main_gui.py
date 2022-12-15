@@ -47,6 +47,11 @@ courses_img_1_load = ImageTk.PhotoImage(courses_img_1)
 courses_img_2 = Image.open('Images/courses_btn_2.png').convert('RGBA')
 courses_img_2_load = ImageTk.PhotoImage(courses_img_2)
 
+set_img_1 = Image.open('Images/set_btn_1.png')
+set_img_1_load = ImageTk.PhotoImage(set_img_1)
+set_img_2 = Image.open('Images/set_btn_2.png').convert('RGBA')
+set_img_2_load = ImageTk.PhotoImage(set_img_2)
+
 leftframe_img = Image.open('Images/leftframe.png')
 leftframe_img_load = ImageTk.PhotoImage(leftframe_img)
 
@@ -74,7 +79,7 @@ def lb_b_click(clicked):
 def lb_b_rel(released):
     laboratory_btn['image'] = laboratory_img_1_load
 
-laboratory_btn = tk.Button(left_frame, image=laboratory_img_1_load, text='LABORATORY', width=142, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)#
+laboratory_btn = tk.Button(left_frame, image=laboratory_img_1_load, text='LABORATORY', width=142, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
 laboratory_btn.grid(row=0, padx=(25,0), pady=(360,0))
 laboratory_btn.bind('<Button-1>', lb_b_click)
 laboratory_btn.bind('<ButtonRelease>', lb_b_rel)
@@ -84,7 +89,7 @@ def cr_b_click(clicked):
 def cr_b_rel(released):
     courses_btn['image'] = courses_img_1_load
 
-courses_btn = tk.Button(left_frame, image=courses_img_1_load, text='COURSES', width=127, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)#
+courses_btn = tk.Button(left_frame, image=courses_img_1_load, text='COURSES', width=127, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
 courses_btn.grid(row=0, padx=(299,0), pady=(360,0))
 courses_btn.bind('<Button-1>', cr_b_click)
 courses_btn.bind('<ButtonRelease>', cr_b_rel)
@@ -99,8 +104,8 @@ def ok_b_click(clicked):
 def ok_b_rel(released):
     set_btn['image'] = set_img_1_load
 
-set_btn = tk.Button(right_frame, image=set_img_1_load, text='SET', width=154, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)#
-set_btn.grid(row=0, padx=(25,0), pady=(360,0))
+set_btn = tk.Button(right_frame, image=set_img_1_load, text='SET', width=154, height=46, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
+set_btn.grid(row=0, padx=(0,0), pady=(0,0))
 set_btn.bind('<Button-1>', ok_b_click)
 set_btn.bind('<ButtonRelease>', ok_b_rel)
 
