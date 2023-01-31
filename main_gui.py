@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import webbrowser
+from threading import Thread
 
 root = tk.Tk()
 root.title('HyFlex Class Portal')
@@ -59,13 +60,18 @@ leftframe_img_load = ImageTk.PhotoImage(leftframe_img)
 rightframe_img = Image.open('Images/rightframe.png')
 rightframe_img_load = ImageTk.PhotoImage(rightframe_img)
 
+# Common Functions
+def browser(link):
+    webbrowser.open(link)
+
 # Left Frame Widget
 left_main_bg = tk.Label(left_frame, image=leftframe_img_load, width=569, height=514)
 left_main_bg.grid(row=0)
 
 def cm_b_click(clicked):
     classroom_btn['image'] = classroom_img_2_load
-    webbrowser.open('meet.google.com')
+    Thread(target=browser, args=('meet.google.com',)).start()
+   # webbrowser.open('meet.google.com')
 def cm_b_rel(released):
     classroom_btn['image'] = classroom_img_1_load
 
@@ -86,7 +92,8 @@ laboratory_btn.bind('<ButtonRelease>', lb_b_rel)
 
 def cr_b_click(clicked):
     courses_btn['image'] = courses_img_2_load
-    webbrowser.open('lsu.instructure.com/courses')
+    Thread(target=browser, args=('lsu.instructure.com/courses',)).start()
+    #webbrowser.open('lsu.instructure.com/courses')
 def cr_b_rel(released):
     courses_btn['image'] = courses_img_1_load
 
