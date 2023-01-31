@@ -60,6 +60,13 @@ leftframe_img_load = ImageTk.PhotoImage(leftframe_img)
 rightframe_img = Image.open('Images/rightframe.png')
 rightframe_img_load = ImageTk.PhotoImage(rightframe_img)
 
+about_img = Image.open('Images/about_btn.png')
+about_img_load = ImageTk.PhotoImage(about_img)
+
+contact_img = Image.open('Images/contact_btn.png')
+contact_img_load = ImageTk.PhotoImage(contact_img)
+
+
 # Common Functions
 def browser(link):
     webbrowser.open(link)
@@ -115,5 +122,19 @@ set_btn = tk.Button(right_frame, image=set_img_1_load, text='SET', width=125, he
 set_btn.grid(row=0, padx=(0,0), pady=(330,0))
 set_btn.bind('<Button-1>', ok_b_click)
 set_btn.bind('<ButtonRelease>', ok_b_rel)
+
+def abt_b_click(clicked): 
+    about_btn['image'] = about_img_load
+
+about_btn = tk.Button(right_frame, image=about_img_load, text='ABOUT', width=32, height=6, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
+about_btn.grid(row=0, padx=(0,0), pady=(406,0))
+about_btn.bind('<Button-1>', ok_b_click)
+
+def cnt_b_click(clicked): 
+    contact_btn['image'] = contact_img_load
+
+contact_btn = tk.Button(right_frame, image=contact_img_load, text='CONTACT', width=53, height=8, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
+contact_btn.grid(row=0, padx=(0,0), pady=(436,0))
+contact_btn.bind('<Button-1>', ok_b_click)
 
 root.mainloop()
