@@ -28,7 +28,7 @@ def x_axis(angle):
     GPIO.output(13, True)
     pwm.ChangeDutyCycle(duty)
     sleep(1)
-    GPIO.output(7, False)
+    GPIO.output(13, False)
     pwm.ChangeDutyCycle(0)
     pwm.stop()
     GPIO.cleanup()
