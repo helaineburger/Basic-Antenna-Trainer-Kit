@@ -49,10 +49,10 @@ courses_img_1_load = ImageTk.PhotoImage(courses_img_1)
 courses_img_2 = Image.open('Images/courses_btn_2.png').convert('RGBA')
 courses_img_2_load = ImageTk.PhotoImage(courses_img_2)
 
-set_img_1 = Image.open('Images/set_btn_1.png')
-set_img_1_load = ImageTk.PhotoImage(set_img_1)
-set_img_2 = Image.open('Images/set_btn_2.png').convert('RGBA')
-set_img_2_load = ImageTk.PhotoImage(set_img_2)
+go_img_1 = Image.open('Images/go_btn_1.png')
+go_img_1_load = ImageTk.PhotoImage(go_img_1)
+go_img_2 = Image.open('Images/go_btn_2.png').convert('RGBA')
+go_img_2_load = ImageTk.PhotoImage(go_img_2)
 
 leftframe_img = Image.open('Images/leftframe.png')
 leftframe_img_load = ImageTk.PhotoImage(leftframe_img)
@@ -114,14 +114,14 @@ right_main_bg = tk.Label(right_frame, image=rightframe_img_load, width=191, heig
 right_main_bg.grid(row=0)
 
 def ok_b_click(clicked): 
-    set_btn['image'] = set_img_2_load
+    go_btn['image'] = go_img_2_load
 def ok_b_rel(released):
-    set_btn['image'] = set_img_1_load
+    go_btn['image'] = go_img_1_load
 
-set_btn = tk.Button(right_frame, image=set_img_1_load, text='SET', width=125, height=32, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
-set_btn.grid(row=0, padx=(0,0), pady=(330,0))
-set_btn.bind('<Button-1>', ok_b_click)
-set_btn.bind('<ButtonRelease>', ok_b_rel)
+go_btn = tk.Button(right_frame, image=go_img_1_load, text='GO', width=125, height=32, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
+go_btn.grid(row=0, padx=(0,0), pady=(330,0))
+go_btn.bind('<Button-1>', ok_b_click)
+go_btn.bind('<ButtonRelease>', ok_b_rel)
 
 def abt_b_click(clicked): 
     about_btn['image'] = about_img_load
