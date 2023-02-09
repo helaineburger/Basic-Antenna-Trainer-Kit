@@ -15,9 +15,9 @@ db_database = 'signaldata'
 
 def subprocess_launcher(file, arg_list):
     try:
-        process = sp.Popen(['python', file] + arg_list, shell=True)
+        process = sp.Popen(['python', file] + arg_list, creationflags = sp.CREATE_NEW_CONSOLE, shell=True)
     except:
-        pass
+        print('Failed to launch script!')
 
 def servo_x_y_get():
     try:
@@ -67,7 +67,7 @@ def servo_x_y_send(x, y):
             print('Data sent.')
             
     except:
-        location = 'Scripts/error_prompt.py'
+        location = 'error_prompt.pyw'
         img_name = 'Images/e_sending_servo.png'
         alert = 'Error sending servo axis data!'
         arg_list = [img_name, alert, x, y]
@@ -209,7 +209,7 @@ def servo_x_y_incr(direction):
                 pass
 
     except:
-        location = 'Scripts/error_prompt.py'
+        location = 'error_prompt.py'
         img_name = 'Images/e_sending_servo.png'
         alert = 'Error sending servo axis data!'
         arg_list = [img_name, alert, x, y]
@@ -366,28 +366,26 @@ def send_offset(offset):
                                  user = db_user, passwd = db_pass,
                                  database = db_database)
     db_cursor = db.cursor()
-##
-##    try:
-    try:
-        query = 'CREATE TABLE offset(offset FLOAT, id INT PRIMARY KEY AUTO_INCREMENT)'
-        db_cursor.execute(query)
-        db.commit()
-##
-    except:
-        pass
 
-    val = [offset]
-    print(val)
-    query = "INSERT INTO offset(offset) VALUES (%s)"
-    db_cursor.execute(query, val)
-    result = db_cursor.fetchone();
-    db.commit()
-    db_cursor.close()
-    db.close()
-    print('Offset data sent.')
-##
-##    except:
-##        print('Error sending offset data!')
+    try:
+        try:
+            query = 'CREATE TABLE offset(offset FLOAT, id INT PRIMARY KEY AUTO_INCREMENT)'
+            db_cursor.execute(query)
+            db.commit()
+            
+        except:
+            pass
+
+        val = [offset]
+        query = "INSERT INTO offset(offset) VALUES (%s)"
+        db_cursor.execute(query, val)
+        db.commit()
+        db_cursor.close()
+        db.close()
+        print('Offset data sent.')
+
+    except:
+        print('Error sending offset data!')
 
 def get_offset():
     db = mysql.connector.connect(host = db_host, port = db_port,
@@ -402,8 +400,6 @@ def get_offset():
         db.commit()
         db_cursor.close()
         db.close()
-
-        print(result[0])
 
         return result[0]
 
@@ -421,3 +417,45 @@ def get_pid(filename):
     file.seek(0)
     pid = int(file.readlines()[0])
     return pid
+
+def send_annc(text):
+    db = mysql.connector.connect(host = db_host, port = db_port,
+                                 user = db_user, passwd = db_pass,
+                                 database = db_database)
+    db_cursor = db.cursor()
+
+    try:
+        query = 'CREATE TABLE announcement(text VARCHAR(3000), id INT PRIMARY KEY AUTO_INCREMENT)'
+        db_cursor.execute(query)
+        db.commit()
+        
+    except:
+        pass
+
+    val = [text]
+    query = "INSERT INTO announcement(text) VALUES (%s)"
+    db_cursor.execute(query, val)
+    db.commit()
+    db_cursor.close()
+    db.close()
+    print('Annoucement data sent.')
+
+def get_annc():
+    db = mysql.connector.connect(host = db_host, port = db_port,
+                                 user = db_user, passwd = db_pass,
+                                 database = db_database)
+    db_cursor = db.cursor()
+
+    try:
+        query = "SELECT * FROM announcement ORDER BY id DESC LIMIT 1"
+        db_cursor.execute(query)
+        result = db_cursor.fetchone();
+        db.commit()
+        db_cursor.close()
+        db.close()
+
+        return result[0]
+        
+    except:
+        result=''
+        return result
