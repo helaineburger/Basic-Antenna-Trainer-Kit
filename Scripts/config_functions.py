@@ -257,7 +257,7 @@ def signal_param_send(cf, fs):
                 print(cf, 'ghz')
                 
             else:
-                print('Invalid center frequency input!') # Error popup
+                print('Invalid center frequency input!')
                 cf = ''
                 pass
 
@@ -286,23 +286,23 @@ def signal_param_send(cf, fs):
                 print(fs, 'ghz')
                 
             else:
-                print('Invalid sample rate input!') # Error popup
+                print('Invalid sample rate input!')
                 fs = ''
                 
         if (cf == '') or (fs == ''):
-            print('Invalid input!') # Error popup
+            print('Invalid input!')
 
         elif (cf < 24e6):
-            print('Center frequency is below designated limit! (Limit = 24 MHz)') # Error popup
+            print('Center frequency is below designated limit! (Limit = 24 MHz)')
             
         elif (fs <= 900e3):
-            print('Samping rate is below designated limit! (Limit > 900 KHz)') # Error popup
+            print('Samping rate is below designated limit! (Limit > 900 KHz)')
 
         elif (fs >= 3.2e6):
-            print('Sampling rate is above designated limit! (Limit < 3.2 MHz)') # Error popup
+            print('Sampling rate is above designated limit! (Limit < 3.2 MHz)')
             
         elif (cf > 1.7e9):
-            print('Center frequency is above designated limit! (Limit = 1.7 GHz') # Error popup
+            print('Center frequency is above designated limit! (Limit = 1.7 GHz')
 
         else:
             try:
@@ -321,27 +321,27 @@ def signal_param_send(cf, fs):
         print('Sending failed!') # Error popup
 
 def get_sig_data():
-##    try:
-    db = mysql.connector.connect(host = db_host, port = db_port,
-                                 user = db_user, passwd = db_pass,
-                                 database = db_database)
-    db_cursor = db.cursor()
+    try:
+        db = mysql.connector.connect(host = db_host, port = db_port,
+                                     user = db_user, passwd = db_pass,
+                                     database = db_database)
+        db_cursor = db.cursor()
 
-    query = "SELECT * FROM iq_signal_data ORDER BY data_id DESC LIMIT 1"
-    db_cursor.execute(query)
-    result = db_cursor.fetchone();
-    db.commit()
-    db_cursor.close()
-    db.close()
-    
-    x = pickle.loads(result[0])
-    y = pickle.loads(result[1])
+        query = "SELECT * FROM iq_signal_data ORDER BY data_id DESC LIMIT 1"
+        db_cursor.execute(query)
+        result = db_cursor.fetchone();
+        db.commit()
+        db_cursor.close()
+        db.close()
 
-    return (x, y)
+        x = pickle.loads(result[0])
+        y = pickle.loads(result[1])
+
+        return (x, y)
     
-##    except:
-##        print('Error recieving signal data!')
-##        pass
+    except:
+        print('Error recieving signal data!')
+        pass
 
 def calc_offset(off_y, on_y, on_x, cent_freq):
     delta = np.subtract(off_y, on_y)
@@ -358,8 +358,6 @@ def calibrate(offset, signal, samp_rate):
     x = signal * shift_correction
 
     return x
-
-#def sig_strength():
 
 def send_offset(offset):
     db = mysql.connector.connect(host = db_host, port = db_port,
