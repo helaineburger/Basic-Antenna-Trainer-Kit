@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version= 1.0
+Exec= /home/user/Documents/Research/Final/Basic-Antenna-Trainer-Kit-main/launcher.sh
+Icon= /home/user/Documents/Research/Final/Basic-Antenna-Trainer-Kit-main/Images/icon.ico
+Type= Application
+Terminal= false
+
