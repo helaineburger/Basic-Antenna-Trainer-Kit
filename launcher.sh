@@ -2,7 +2,7 @@
 
 commands () {
 	cd /home/user/Documents/Research/Final/Basic-Antenna-Trainer-Kit-main
-	python login.pyw
+	python hyflex.pyw
 	$SHELL
 }
 
