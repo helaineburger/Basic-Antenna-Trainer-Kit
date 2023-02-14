@@ -50,27 +50,34 @@ y_off = pickle.loads(result[1])
 
 
 trans_on = input('Turn transmitter on. Enter any key to continue: ')
+    
+while True:
+    query = "SELECT * FROM iq_signal_data ORDER BY data_id DESC LIMIT 1"
+    db_cursor.execute(query)
+    result = db_cursor.fetchone();
+    db.commit()
 
-query = "SELECT * FROM iq_signal_data ORDER BY data_id DESC LIMIT 1"
-db_cursor.execute(query)
-result = db_cursor.fetchone();
-db.commit()
-
-x_on = pickle.loads(result[0])
-y_on = pickle.loads(result[1])
+    x_on = pickle.loads(result[0])
+    y_on = pickle.loads(result[1])
 
 
-query = "SELECT * FROM signal_param ORDER BY id DESC LIMIT 1"
-db_cursor.execute(query)
-result = db_cursor.fetchone();
-db.commit()
+    query = "SELECT * FROM signal_param ORDER BY id DESC LIMIT 1"
+    db_cursor.execute(query)
+    result = db_cursor.fetchone();
+    db.commit()
 
-cent_freq = result[0]
+    cent_freq = result[0]
 
-offset = cf.calc_offset(y_off, y_on, x_on, cent_freq)
-print(offset[0])
+    offset = cf.calc_offset(y_off, y_on, x_on, cent_freq)
+    print(offset)
+    
+    if offset == 'retry':
+        print('Retrying...')
+        pass
 
-cf.send_offset(offset[0])
+    else:
+        cf.send_offset(offset)
+        break
 
 db_cursor.close()
 db.close()
