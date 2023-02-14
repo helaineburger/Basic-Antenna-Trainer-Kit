@@ -345,20 +345,40 @@ def get_sig_data():
 
 def calc_offset(off_y, on_y, on_x, cent_freq):
     print('Calibrating...')
-    while True:
-        delta = np.subtract(on_y, off_y)
-        if len(delta) == len(on_x):
-            max_on = np.max(on_y)
-            max_val = np.max(delta)
-            max_val_index = np.where(delta == max_val)
-            uncalib_freq = on_x[max_val_index[0][0]]
-            offset = ((cent_freq / 1e6) - uncalib_freq) * -1e6
-            print("Offset: ", offset)
-            return offset
-            print('Done.')
-            break
+    
+    delta = np.subtract(on_y, off_y)
+    if len(delta) == len(on_x):
+        max_on = np.max(on_y)
+        max_on_index = np.where(on_y == max_on)
+        
+        max_val = np.max(delta)
+        max_val_index = np.where(delta == max_val)
+
+        if (len(max_val_index) == 1) and (len(max_on_index) == 1):
+            if max_val_index == max_on_index:
+                uncalib_freq = on_x[max_val_index[0][0]]
+                offset = ((cent_freq / 1e6) - uncalib_freq) * -1e6
+                print("Offset: ", offset)
+                
+                retry = input('Retry (y/n): ')
+                if (retry == 'y') or (retry == 'Y'):
+                    return ('retry')
+                
+                elif (retry == 'n') or (retry == 'N'):
+                    return offset
+
+                else:
+                    print('Invalid input, retrying.')
+                    return ('retry')
+
+            else:
+                return ('retry')
+
         else:
-            pass
+            return('retry')
+            
+    else:
+        return ('retry')
 
 def calibrate(offset, signal, samp_rate):   
     shift_correction = np.exp(-1.0j * 2.0 * np.pi * offset / samp_rate * np.arange(len(signal)))
