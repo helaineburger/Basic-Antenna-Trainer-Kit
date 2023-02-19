@@ -1,14 +1,22 @@
+####################
+## Import Modules ##
+####################
+
 from cryptography.fernet import Fernet
+
+##############################
+## Decode Database Password ##
+##############################
 
 def cred():
     cred_file = open('cred', 'a+')
     cred_file.seek(0)
-    key = bytes(cred_file.readlines()[0], 'utf-8')
+    key = bytes(cred_file.readlines()[0], 'utf-8') # encryption key
     cred_file.seek(0)
-    enc_pword = bytes(cred_file.readlines()[1], 'utf-8')
+    enc_pword = bytes(cred_file.readlines()[1], 'utf-8') # encrypted password
     cred_file.close()
     
     fernet = Fernet(key)
-    pword = str(fernet.decrypt(enc_pword)).strip('b').strip('\'')
+    pword = str(fernet.decrypt(enc_pword)).strip('b').strip('\'') # decryted password
 
     return (pword)
