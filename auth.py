@@ -74,11 +74,11 @@ fernet = Fernet(key)
 #pword = fernet.decrypt(enc_pword).decode() # decrypted password
 
 cred = open('cred', 'w+')
-cred.write(str(key)[2:(len(key)+2)] + '\n' + str(enc_pword)[2:(len(enc_pword)+2)])
+cred.write(str(key)[2:(len(key)+2)] + '\n' + str(enc_pword)[2:(len(enc_pword)+2)]) # write encryption key and encrypted password to cred file in main directory
 cred.close()
 
 cred = open('Scripts/cred', 'w+')
-cred.write(str(key)[2:(len(key)+2)] + '\n' + str(enc_pword)[2:(len(enc_pword)+2)])
+cred.write(str(key)[2:(len(key)+2)] + '\n' + str(enc_pword)[2:(len(enc_pword)+2)]) # write encryption key and encrypted password to cred file in Scripts directory
 cred.close()
 
 sys.exit() # terminate script
