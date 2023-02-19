@@ -27,7 +27,7 @@ except:
     check_run = False
 
 if check_run == True:
-    print('Process is already running!') # Error prompt
+    print('Process is already running!')
     os.kill(pid_log, signal.SIGTERM) # kill existing duplicate process
     pid = os.getpid()
     log_id = open('Scripts/process/antenna_config_gui_pid', 'w+')
@@ -189,7 +189,7 @@ main_bg.grid(row=0)
 ## Common Functions ##
 ######################
 
-def update(): # For Current Axis and dBm output labels
+def update(): # update cuurent axis and dBm output labels
     while(True):
         curr_angle = cf.servo_theta_phi_get()
         data_phi_val = cf.get_sig_data()[1]
@@ -199,7 +199,7 @@ def update(): # For Current Axis and dBm output labels
         phi_val = curr_angle[1]
         curr_angle_theta.set(theta_val)
         curr_angle_phi.set(phi_val)
-        #sleep(0.5) # Increase of decrease update speed
+        #sleep(0.5) # increase or decrease update speed
 
 def subprocess_launcher(file): # launch subprocess
     try:
