@@ -1,4 +1,12 @@
+####################
+## Import Modules ##
+####################
+
 from cryptography.fernet import Fernet
+
+##############################
+## Decode Database Password ##
+##############################
 
 def cred():
     cred_file = open('cred', 'a+')
