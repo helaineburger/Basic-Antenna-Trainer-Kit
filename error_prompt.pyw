@@ -1,8 +1,16 @@
+####################
+## Import Modules ##
+####################
+
 import tkinter as tk
 from PIL import Image, ImageTk
 from threading import Thread
 import sys
 import Scripts.config_functions as cf
+
+###################
+## Get Arguments ##
+###################
 
 args = sys.argv[1:]
         
