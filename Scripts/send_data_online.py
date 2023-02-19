@@ -1,4 +1,6 @@
-# GET RTL-SDR DATA
+#####################
+## Import Database ##
+#####################
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,8 +16,12 @@ import sys
 import ast
 import dec
 
+###########################
+## Check Running Process ##
+###########################
+
 try:
-    pid_log = cf.get_pid('Scripts/process/send_data_online_pid')
+    pid_log = cf.get_pid('Scripts/process/send_data_online_pid') # read process id
     check_run = cf.check_pid_status(pid_log)
 
 except:
@@ -23,8 +29,8 @@ except:
     check_run = False
 
 if check_run == True:
-    print('Process is already running!') # Error prompt
-    os.kill(pid_log, signal.SIGTERM)
+    print('Process is already running!')
+    os.kill(pid_log, signal.SIGTERM) # kill existing duplicate process
     pid = os.getpid()
     log_id = open('Scripts/process/send_data_online_pid', 'w+')
     log_id.write(str(pid))
@@ -35,6 +41,10 @@ elif check_run == False:
     log_id = open('Scripts/process/send_data_online_pid', 'w+')
     log_id.write(str(pid))
     log_id.close()
+    
+###########################
+## MySQL Database Config ##
+###########################
 
 
 db_host = 'db-mysql-sgp1-91308-do-user-11790312-0.b.db.ondigitalocean.com'
@@ -53,8 +63,12 @@ drop_table = 'DROP TABLE iq_signal_data'
 db_cursor.execute(drop_table)
 '''
 
+###################################
+## Get Signal Data From Database ##
+###################################
+
 try:
-    create_table = 'CREATE TABLE iq_signal_data(x_data BLOB, y_data BLOB, data_id int PRIMARY KEY AUTO_INCREMENT)'
+    create_table = 'CREATE TABLE iq_signal_data(x_data BLOB, y_data BLOB, data_id int PRIMARY KEY AUTO_INCREMENT)' # create signal data table in database
     db_cursor.execute(create_table)
     
 except:
@@ -62,7 +76,7 @@ except:
 
 def get_sig_param():
     try:
-        get_sig_param = 'SELECT * FROM signal_param ORDER BY id DESC LIMIT 1'
+        get_sig_param = 'SELECT * FROM signal_param ORDER BY id DESC LIMIT 1' # get signal paramaters data from database
         db_cursor.execute(get_sig_param)
         sig_param = db_cursor.fetchone();
     
@@ -76,35 +90,39 @@ def get_sig_param():
 print('Initializing...')
 get_sig_param()
 
+###################################
+## Send RTL-SDR Data To Database ##
+###################################
+
 try:
-    sdr = RtlSdr()
+    sdr = RtlSdr() # load rtl sdr
     gain = 4
 
     def get_data():
-        sig_param_read = open('param', 'a+')
+        sig_param_read = open('param', 'a+') # read rtl-sdr parameters from param file
         sig_param_read.seek(0)
         sig_param_data = sig_param_read.readlines()[0]
 
         sig_param = ast.literal_eval(sig_param_data)
         offset = cf.get_offset()
-        sdr.sample_rate = sig_param[1]
-        sdr.center_freq = sig_param[0]
-        sdr.gain = gain
+        sdr.sample_rate = sig_param[1] # sample rate
+        sdr.center_freq = sig_param[0] # center frequency
+        sdr.gain = gain # signal gain
 
         try:
             samples = sdr.read_samples(256*1024)
 
             # Offset Correction
-            offset = cf.get_offset()
-            samples = cf.calibrate(offset, samples, sig_param[1])
+            offset = cf.get_offset() # get offset
+            samples = cf.calibrate(offset, samples, sig_param[1]) # calibrate samples
             
             fig, (ax) = plt.subplots(1,1)
-            ax.psd(samples, NFFT=1024, Fs=sdr.sample_rate/1e6, Fc=sdr.center_freq/1e6, data=samples)
+            ax.psd(samples, NFFT=1024, Fs=sdr.sample_rate/1e6, Fc=sdr.center_freq/1e6, data=samples) # plot iq signal
             line = ax.lines[0]
-            x_data = line.get_xdata()
-            y_data = line.get_ydata()
-            np.save('x_data', x_data, allow_pickle=True, fix_imports=True)
-            np.save('y_data', y_data, allow_pickle=True, fix_imports=True)
+            x_data = line.get_xdata() # get x array values from plot
+            y_data = line.get_ydata() # get y array values from plot
+            np.save('x_data', x_data, allow_pickle=True, fix_imports=True) # write x array values to file
+            np.save('y_data', y_data, allow_pickle=True, fix_imports=True) # write y array values to file
             print('Data gathered.')
             plt.close() # Do not remove to prevent memory leak!!!
         
@@ -113,15 +131,15 @@ try:
             pass
 
     def send_data():
-        x = np.load('x_data.npy', allow_pickle=True)
-        y = np.load('y_data.npy', allow_pickle=True)
+        x = np.load('x_data.npy', allow_pickle=True) # read x array values
+        y = np.load('y_data.npy', allow_pickle=True) # read y array values
                 
         p_x_data = pickle.dumps(x)
         p_y_data = pickle.dumps(y)
 
         try:
             val = (p_x_data, p_y_data)
-            send_data_db = "INSERT INTO iq_signal_data (x_data, y_data) VALUES (%s, %s)"
+            send_data_db = "INSERT INTO iq_signal_data (x_data, y_data) VALUES (%s, %s)" # send x and y array values to database
             db_cursor.execute(send_data_db, val)
             db.commit()
             print('Data sent.')
@@ -142,5 +160,5 @@ try:
 except:
     print('RTL-SDR not detected! Re-insert and try again.')
     sleep(3)
-    sys.exit()
+    sys.exit() # terminate script
     
