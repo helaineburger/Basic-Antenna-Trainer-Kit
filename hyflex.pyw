@@ -100,13 +100,13 @@ def login_option(option):
         login = open('login', 'w+')
         login.write('admin')
         login.close()
-        launch_main = sp.Popen(['main_gui.exe']) # open hyflex portal admin gui
+        launch_main = sp.Popen(['python', 'main_gui.pyw'], shell=True) # open hyflex portal admin gui
 
     elif option == 'student':
         login = open('login', 'w+')
         login.write('student')
         login.close()
-        launch_main = sp.Popen(['main_gui.exe']) # open hyflex portal student gui
+        launch_main = sp.Popen(['python', 'main_gui.pyw'], shell=True) # open hyflex portal student gui
         
 ####################
 ## Create Widgets ##
