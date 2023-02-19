@@ -1,3 +1,7 @@
+####################
+## Import Modules ##
+####################
+
 import mysql.connector
 import math
 import subprocess as sp
@@ -8,31 +12,39 @@ import sys
 import psutil
 import dec
 
+###########################
+## MySQL Database Config ##
+###########################
+
 db_host = 'db-mysql-sgp1-91308-do-user-11790312-0.b.db.ondigitalocean.com'
 db_port = '25060'
 db_user = 'client'
 db_pass = dec.cred()
 db_database = 'signaldata'
 
-def subprocess_launcher(file, arg_list):
+###################
+## Function List ##
+###################
+
+def subprocess_launcher(file, arg_list): # launch subprocess
     try:
-        process = sp.Popen([file] + arg_list)
+        process = sp.Popen(['python', file] + arg_list)
     except:
         print('Failed to launch script!')
 
-def servo_x_y_get():
+def servo_theta_phi_get(): # get servo axis data
     try:
         db = mysql.connector.connect(host = db_host, port = db_port,
                              user = db_user, passwd = db_pass,
                              database = db_database)
         db_cursor = db.cursor()
 
-        query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1"
+        query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1" # get current axis data from database
         db_cursor.execute(query)
         result = db_cursor.fetchone();
 
-        x = result[0]
-        y = result[1]
+        theta = result[0]
+        phi = result[1]
 
         db.commit()
         db_cursor.close()
@@ -40,12 +52,12 @@ def servo_x_y_get():
 
         
         print('Data retrieved.')
-        return (x, y)
+        return (theta, phi)
     
     except:
         print('Error retrieving servo axis data!')
 
-def servo_x_y_send(x, y):
+def servo_theta_phi_send(theta, phi): # send servo axis data
     try:
         db = mysql.connector.connect(host = db_host, port = db_port,
                              user = db_user, passwd = db_pass,
@@ -53,14 +65,14 @@ def servo_x_y_send(x, y):
         db_cursor = db.cursor()
 
         try:
-            query = 'CREATE TABLE cur_ax(x_val INT(255), y_val INT(255), id INT PRIMARY KEY AUTO_INCREMENT)'
+            query = 'CREATE TABLE cur_ax(theta_val INT(255), phi_val INT(255), id INT PRIMARY KEY AUTO_INCREMENT)' # create servo axis table in database
             db_cursor.execute(query)
 
         except:
             pass
                 
-            val = (x, y)
-            send_data = "INSERT INTO cur_ax(x_val, y_val) VALUES (%s, %s)"
+            val = (theta, phi)
+            send_data = "INSERT INTO cur_ax(theta_val, phi_val) VALUES (%s, %s)" # upload theta and phi servo axis values to database
             db_cursor.execute(send_data, val)
             db.commit()
             db_cursor.close()
@@ -68,13 +80,13 @@ def servo_x_y_send(x, y):
             print('Data sent.')
             
     except:
-        location = 'error_prompt.exe'
+        location = 'error_prompt.pyw'
         img_name = 'Images/e_sending_servo.png'
         alert = 'Error sending servo axis data!'
-        arg_list = [img_name, alert, x, y]
-        Thread(target=subprocess_launcher, args=[location, arg_list]).start()
+        arg_list = [img_name, alert, theta, phi]
+        Thread(target=subprocess_launcher, args=[location, arg_list]).start() # launch error gui
 
-def servo_x_y_incr(direction):
+def servo_theta_phi_incr(direction): # increment/decrement/reset servo axis data
     try:
         db = mysql.connector.connect(host = db_host, port = db_port,
                              user = db_user, passwd = db_pass,
@@ -83,22 +95,22 @@ def servo_x_y_incr(direction):
         
         if direction == 'up':
             try:
-                query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1"
+                query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1" # get current axis data from database
                 db_cursor.execute(query)
                 result = db_cursor.fetchone();
-                x = result[0]
-                y = result[1]
+                theta = result[0]
+                phi = result[1]
                 db.commit()
                 
-                y = y + 5
-                if y > 180:
-                    y = 180
+                phi = phi + 5 # increment phi data by 5 degrees
+                if phi > 180:
+                    phi = 180
                     
                 else:
                     pass
 
-                val = (x, y)
-                query = "INSERT INTO cur_ax(x_val, y_val) VALUES (%s, %s)"
+                val = (theta, phi)
+                query = "INSERT INTO cur_ax(theta_val, phi_val) VALUES (%s, %s)" # upload axis data input into database
                 db_cursor.execute(query, val)
                 db.commit()
                 
@@ -111,22 +123,22 @@ def servo_x_y_incr(direction):
 
         elif direction == 'down':
             try:
-                query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1"
+                query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1" # get current axis data from database
                 db_cursor.execute(query)
                 result = db_cursor.fetchone();
-                x = result[0]
-                y = result[1]
+                theta = result[0]
+                phi = result[1]
                 db.commit()
                 
-                y = y - 5
-                if y < 0:
-                    y = 0
+                phi = phi - 5 # decrement phi value by 5 degrees
+                if phi < 0:
+                    phi = 0
                     
                 else:
                     pass
 
-                val = (x, y)
-                query = "INSERT INTO cur_ax(x_val, y_val) VALUES (%s, %s)"
+                val = (theta, phi)
+                query = "INSERT INTO cur_ax(theta_val, phi_val) VALUES (%s, %s)" # upload axis data input into database
                 db_cursor.execute(query, val)
                 db.commit()
                 
@@ -139,22 +151,22 @@ def servo_x_y_incr(direction):
 
         elif direction == 'left':
             try:
-                query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1"
+                query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1" # get current axis data from database
                 db_cursor.execute(query)
                 result = db_cursor.fetchone();
-                x = result[0]
-                y = result[1]
+                theta = result[0]
+                phi = result[1]
                 db.commit()
                 
-                x = x - 5
-                if x < 0:
-                    x = 0
+                theta = theta - 5 # decrement theta value by 5 degrees
+                if theta < 0:
+                    theta = 0
                     
                 else:
                     pass
 
-                val = (x, y)
-                query = "INSERT INTO cur_ax(x_val, y_val) VALUES (%s, %s)"
+                val = (theta, phi)
+                query = "INSERT INTO cur_ax(theta_val, phi_val) VALUES (%s, %s)" # upload axis data input into database
                 db_cursor.execute(query, val)
                 db.commit()
                 
@@ -167,22 +179,22 @@ def servo_x_y_incr(direction):
 
         elif direction == 'right':
             try:
-                query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1"
+                query = "SELECT * FROM cur_ax ORDER BY id DESC LIMIT 1" # get current axis data from database
                 db_cursor.execute(query)
                 result = db_cursor.fetchone();
-                x = result[0]
-                y = result[1]
+                theta = result[0]
+                phi = result[1]
                 db.commit()
                 
-                x = x + 5
-                if x > 180:
-                    x = 180
+                theta = theta + 5 # increment theta value by 5 degrees
+                if theta > 180:
+                    theta = 180
                     
                 else:
                     pass
 
-                val = (x, y)
-                query = "INSERT INTO cur_ax(x_val, y_val) VALUES (%s, %s)"
+                val = (theta, phi)
+                query = "INSERT INTO cur_ax(theta_val, phi_val) VALUES (%s, %s)" # upload axis data input into database
                 db_cursor.execute(query, val)
                 db.commit()
                 
@@ -195,10 +207,10 @@ def servo_x_y_incr(direction):
 
         elif direction == 'rst':
             try:
-                x = 90
-                y = 90
-                val = (x, y)
-                query = "INSERT INTO cur_ax(x_val, y_val) VALUES (%s, %s)"
+                theta = 90 # reset theta value to default (90 degrees)
+                phi = 90 # reset phi value to default (90 degrees)
+                val = (theta, phi)
+                query = "INSERT INTO cur_ax(theta_val, phi_val) VALUES (%s, %s)" # upload axis data input into database
                 db_cursor.execute(query, val)
                 db.commit()
                 
@@ -210,13 +222,13 @@ def servo_x_y_incr(direction):
                 pass
 
     except:
-        location = 'error_prompt.py'
+        location = 'error_prompt.pyw'
         img_name = 'Images/e_sending_servo.png'
         alert = 'Error sending servo axis data!'
-        arg_list = [img_name, alert, x, y]
-        Thread(target=subprocess_launcher, args=[location, arg_list]).start()
+        arg_list = [img_name, alert, theta, phi]
+        Thread(target=subprocess_launcher, args=[location, arg_list]).start() # launch error gui
         
-def signal_param_send(cf, fs):
+def signal_param_send(cf, fs): # send signal parameters to database
     try:
         db = mysql.connector.connect(host = db_host, port = db_port,
                              user = db_user, passwd = db_pass,
@@ -224,7 +236,7 @@ def signal_param_send(cf, fs):
         db_cursor = db.cursor()
 
         try:
-            query = 'CREATE TABLE signal_param(cent_freq BIGINT(255), samp_rate BIGINT(255), id INT PRIMARY KEY AUTO_INCREMENT)'
+            query = 'CREATE TABLE signal_param(cent_freq BIGINT(255), samp_rate BIGINT(255), id INT PRIMARY KEY AUTO_INCREMENT)' # create signal paramaters database table
             db_cursor.execute(query)
 
         except:
@@ -240,19 +252,19 @@ def signal_param_send(cf, fs):
             
         except:
             if 'khz' in cf:
-                cf = cf.replace('khz', '')
+                cf = cf.replace('khz', '') # convert khz format to float
                 cf = float(cf) * 1e3
                 cf = math.ceil(cf)
                 print(cf, 'khz')
 
             elif 'mhz' in cf:
-                cf = cf.replace('mhz', '')
+                cf = cf.replace('mhz', '') # convert mhz format to float
                 cf = float(cf) * 1e6
                 cf = math.ceil(cf)
                 print(cf, 'mhz')
 
             elif 'ghz' in cf:
-                cf = cf.replace('ghz', '')
+                cf = cf.replace('ghz', '') # convert ghz format to float
                 cf = float(cf) * 1e9
                 cf = math.ceil(cf)
                 print(cf, 'ghz')
@@ -269,19 +281,19 @@ def signal_param_send(cf, fs):
             
         except:
             if 'khz' in fs:
-                fs = fs.replace('khz', '')
+                fs = fs.replace('khz', '') # convert khz format to float
                 fs = float(fs) * 1e3
                 fs = math.ceil(fs)
                 print(fs, 'khz')
 
             elif 'mhz' in fs:
-                fs = fs.replace('mhz', '')
+                fs = fs.replace('mhz', '') # convert mhz format to float
                 fs = float(fs) * 1e6
                 fs = math.ceil(fs)
                 print(fs, 'mhz')
 
             elif 'ghz' in fs:
-                fs = fs.replace('ghz', '')
+                fs = fs.replace('ghz', '') # convert ghz format to float
                 fs = float(fs) * 1e9
                 fs = math.ceil(fs)
                 print(fs, 'ghz')
@@ -308,7 +320,7 @@ def signal_param_send(cf, fs):
         else:
             try:
                 val = (cf, fs)
-                send_data = "INSERT INTO signal_param(cent_freq, samp_rate) VALUES (%s, %s)"
+                send_data = "INSERT INTO signal_param(cent_freq, samp_rate) VALUES (%s, %s)" # send ceneter frequency and sample rate data into database
                 db_cursor.execute(send_data, val)
                 db.commit()
                 db_cursor.close()
@@ -321,14 +333,14 @@ def signal_param_send(cf, fs):
     except:
         print('Sending failed!')
 
-def get_sig_data():
+def get_sig_data(): # get signal data from database
     try:
         db = mysql.connector.connect(host = db_host, port = db_port,
                                      user = db_user, passwd = db_pass,
                                      database = db_database)
         db_cursor = db.cursor()
 
-        query = "SELECT * FROM iq_signal_data ORDER BY data_id DESC LIMIT 1"
+        query = "SELECT * FROM iq_signal_data ORDER BY data_id DESC LIMIT 1" # get signal data from database
         db_cursor.execute(query)
         result = db_cursor.fetchone();
         db.commit()
@@ -343,16 +355,16 @@ def get_sig_data():
     except:
         print('Error retrieving signal data!')
 
-def calc_offset(off_y, on_y, on_x, cent_freq):
+def calc_offset(off_y, on_y, on_x, cent_freq): # calculate center frequency offset
     print('Calibrating...')
     
-    delta = np.subtract(on_y, off_y)
+    delta = np.subtract(on_y, off_y) # delta between max y with transmitter on and max y value with transmitter off
     if len(delta) == len(on_x):
-        max_on = np.max(on_y)
-        max_on_index = np.where(on_y == max_on)
+        max_on = np.max(on_y) # get max y value with transmitter on
+        max_on_index = np.where(on_y == max_on) # get max y value index with transmitter on
         
-        max_val = np.max(delta)
-        max_val_index = np.where(delta == max_val)
+        max_val = np.max(delta) # get max y value from delta
+        max_val_index = np.where(delta == max_val) # get mx y value index from delta
 
         if (len(max_val_index) == 1) and (len(max_on_index) == 1):
             if max_val_index == max_on_index:
@@ -380,13 +392,13 @@ def calc_offset(off_y, on_y, on_x, cent_freq):
     else:
         return ('retry')
 
-def calibrate(offset, signal, samp_rate):   
+def calibrate(offset, signal, samp_rate):  # calibrate center frequency using offset data
     shift_correction = np.exp(-1.0j * 2.0 * np.pi * offset / samp_rate * np.arange(len(signal)))
     x = signal * shift_correction
 
     return x
 
-def send_offset(offset):
+def send_offset(offset): # send offset value to database
     db = mysql.connector.connect(host = db_host, port = db_port,
                                  user = db_user, passwd = db_pass,
                                  database = db_database)
@@ -394,7 +406,7 @@ def send_offset(offset):
 
     try:
         try:
-            query = 'CREATE TABLE offset(offset FLOAT, id INT PRIMARY KEY AUTO_INCREMENT)'
+            query = 'CREATE TABLE offset(offset FLOAT, id INT PRIMARY KEY AUTO_INCREMENT)' # create offset table in database
             db_cursor.execute(query)
             db.commit()
             
@@ -402,7 +414,7 @@ def send_offset(offset):
             pass
 
         val = [offset]
-        query = "INSERT INTO offset(offset) VALUES (%s)"
+        query = "INSERT INTO offset(offset) VALUES (%s)" # upload offset data to database
         db_cursor.execute(query, val)
         db.commit()
         db_cursor.close()
@@ -412,14 +424,14 @@ def send_offset(offset):
     except:
         print('Error sending offset data!')
 
-def get_offset():
+def get_offset(): # get offset data from database
     db = mysql.connector.connect(host = db_host, port = db_port,
                                  user = db_user, passwd = db_pass,
                                  database = db_database)
     db_cursor = db.cursor()
 
     try:
-        query = "SELECT * FROM offset ORDER BY id DESC LIMIT 1"
+        query = "SELECT * FROM offset ORDER BY id DESC LIMIT 1" # get offset data from database
         db_cursor.execute(query)
         result = db_cursor.fetchone();
         db.commit()
@@ -433,24 +445,24 @@ def get_offset():
         return result
         print('Error recieving offset data!')
 
-def check_pid_status(pid):
+def check_pid_status(pid): # check process id status
     status = psutil.pid_exists(pid)
     return status
 
-def get_pid(filename):
+def get_pid(filename): # read process id
     file = open(filename, 'a+')
     file.seek(0)
     pid = int(file.readlines()[0])
     return pid
 
-def send_annc(text):
+def send_annc(text): # upload annoucement value to database
     db = mysql.connector.connect(host = db_host, port = db_port,
                                  user = db_user, passwd = db_pass,
                                  database = db_database)
     db_cursor = db.cursor()
 
     try:
-        query = 'CREATE TABLE announcement(text VARCHAR(3000), id INT PRIMARY KEY AUTO_INCREMENT)'
+        query = 'CREATE TABLE announcement(text VARCHAR(3000), id INT PRIMARY KEY AUTO_INCREMENT)' # create announcement table in database
         db_cursor.execute(query)
         db.commit()
         
@@ -458,21 +470,21 @@ def send_annc(text):
         pass
 
     val = [text]
-    query = "INSERT INTO announcement(text) VALUES (%s)"
+    query = "INSERT INTO announcement(text) VALUES (%s)" # upload announcement value to database
     db_cursor.execute(query, val)
     db.commit()
     db_cursor.close()
     db.close()
     print('Annoucement data sent.')
 
-def get_annc():
+def get_annc(): # get announcement data from database
     db = mysql.connector.connect(host = db_host, port = db_port,
                                  user = db_user, passwd = db_pass,
                                  database = db_database)
     db_cursor = db.cursor()
 
     try:
-        query = "SELECT * FROM announcement ORDER BY id DESC LIMIT 1"
+        query = "SELECT * FROM announcement ORDER BY id DESC LIMIT 1" # get announcement value from database
         db_cursor.execute(query)
         result = db_cursor.fetchone();
         db.commit()
