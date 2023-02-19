@@ -80,9 +80,9 @@ main_bg.grid(row=0, column=0, padx=(0,0), pady=(0,0))
 def browser(link):
     webbrowser.open(link)
     
-#############
-## Widgets ##
-#############
+####################
+## Create Widgets ##
+####################
 
 contact_lbl = tk.Label(mainFrame, text='Email', background='white', fg='#083414', font=('arial bold', 9)) # create contacts title label
 contact_lbl.grid(row=0, padx=(0,0), pady=(0,20))
