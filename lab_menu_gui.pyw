@@ -1,3 +1,7 @@
+####################
+## Import Modules ##
+####################
+
 import tkinter as tk
 from PIL import Image, ImageTk
 from threading import Thread
@@ -6,8 +10,12 @@ import Scripts.config_functions as cf
 import os
 import signal
 
+###########################
+## Check Running Process ##
+###########################
+
 try:
-    pid_log = cf.get_pid('Scripts/process/lab_menu_gui_pid')
+    pid_log = cf.get_pid('Scripts/process/lab_menu_gui_pid') # read process id
     check_run = cf.check_pid_status(pid_log)
 
 except:
@@ -16,7 +24,7 @@ except:
 
 if check_run == True:
     print('Process is already running!')
-    os.kill(pid_log, signal.SIGTERM)
+    os.kill(pid_log, signal.SIGTERM) # kill existing duplicate process
     pid = os.getpid()
     log_id = open('Scripts/process/lab_menu_gui_pid', 'w+')
     log_id.write(str(pid))
@@ -28,6 +36,33 @@ elif check_run == False:
     log_id.write(str(pid))
     log_id.close()
     
+#################
+## Load Images ##
+#################
+
+# Images
+frame_img = Image.open('Images/lab_menu_1.png')
+frame_img_load = ImageTk.PhotoImage(frame_img)
+
+capture_img_1 = Image.open('Images/capture_btn_1.png')
+capture_img_1_load = ImageTk.PhotoImage(capture_img_1)
+capture_img_2 = Image.open('Images/capture_btn_2.png')
+capture_img_2_load = ImageTk.PhotoImage(capture_img_2)
+
+output_control_img_1 = Image.open('Images/output_control_btn_1.png')
+output_control_img_1_load = ImageTk.PhotoImage(output_control_img_1)
+output_control_img_2 = Image.open('Images/output_control_btn_2.png')
+output_control_img_2_load = ImageTk.PhotoImage(output_control_img_2)
+
+calibrate_sdr_img_1 = Image.open('Images/calibrate_sdr_btn_1.png')
+calibrate_sdr_img_1_load = ImageTk.PhotoImage(calibrate_sdr_img_1)
+calibrate_sdr_img_2 = Image.open('Images/calibrate_sdr_btn_2.png')
+calibrate_sdr_img_2_load = ImageTk.PhotoImage(calibrate_sdr_img_2)
+
+###########################
+## Create Tkinter Window ##
+###########################
+
 root = tk.Tk()
 root.title('Laboratory Menu')
 root.iconbitmap('Images/icon.ico')
@@ -50,84 +85,72 @@ mainFrame = tk.LabelFrame(root, text='', width=450, height=320, highlightcolor='
 mainFrame.grid(row=0)
 mainFrame.grid_propagate(False)
 
-# Images
-frame_img = Image.open('Images/lab_menu_1.png')
-frame_img_load = ImageTk.PhotoImage(frame_img)
-
-capture_img_1 = Image.open('Images/capture_btn_1.png')
-capture_img_1_load = ImageTk.PhotoImage(capture_img_1)
-capture_img_2 = Image.open('Images/capture_btn_2.png')
-capture_img_2_load = ImageTk.PhotoImage(capture_img_2)
-
-output_control_img_1 = Image.open('Images/output_control_btn_1.png')
-output_control_img_1_load = ImageTk.PhotoImage(output_control_img_1)
-output_control_img_2 = Image.open('Images/output_control_btn_2.png')
-output_control_img_2_load = ImageTk.PhotoImage(output_control_img_2)
-
-calibrate_sdr_img_1 = Image.open('Images/calibrate_sdr_btn_1.png')
-calibrate_sdr_img_1_load = ImageTk.PhotoImage(calibrate_sdr_img_1)
-calibrate_sdr_img_2 = Image.open('Images/calibrate_sdr_btn_2.png')
-calibrate_sdr_img_2_load = ImageTk.PhotoImage(calibrate_sdr_img_2)
-
-# Main Frame Widget
+# Main Frame Background
 main_bg = tk.Label(mainFrame, image=frame_img_load, width=450, height=320, highlightcolor='#282828', borderwidth=0, highlightthickness=0, bg='white')
 main_bg.grid(row=0, column=0, padx=(0,0), pady=(0,0))
 
-# Common Functions
-def subprocess_launcher(file):
+###################### 
+## Common Functions ##
+######################
+
+def subprocess_launcher(file): # launch subprocess without console
     try:
         process = sp.Popen(['python', file], creationflags = sp.CREATE_NEW_CONSOLE, shell=True)
 
     except:
         print('Failed to launch script!')
 
-def subprocess_launcher_with_console(file):
+def subprocess_launcher_with_console(file): # launch subprocess with console
     try:
         process = sp.Popen(['python', file], creationflags = sp.CREATE_NEW_CONSOLE, shell=False)
 
     except:
         print('Failed to launch script!')
 
-def subprocess_launcher_add_args(file, arg_list):
+def subprocess_launcher_add_args(file, arg_list): # launch subprocess with multiple arguments
     try:
         process = sp.Popen(['python', file] + arg_list, shell=True)
     except:
         pass
+    
+####################
+## Create Widgets ##
+####################
 
-def capture_click(clicked):
+def capture_click(clicked): # when capture_btn is clicked
     capture_btn['image'] = capture_img_2_load
-    Thread(target=subprocess_launcher_with_console, args=['Scripts/send_data_online.py']).start()
+    Thread(target=subprocess_launcher_with_console, args=['Scripts/send_data_online.py']).start() # launch capture data console
 
-def capture_rel(released):
+def capture_rel(released): # when capture_btn is released
     capture_btn['image'] = capture_img_1_load
 
-capture_btn = tk.Button(mainFrame, image=capture_img_1_load, text='capture', width=194, height=50, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
+capture_btn = tk.Button(mainFrame, image=capture_img_1_load, text='capture', width=194, height=50, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0) # create capture data button
 capture_btn.grid(row=0, padx=(0,0), pady=(0,143))
 capture_btn.bind('<Button-1>', capture_click)
 capture_btn.bind('<ButtonRelease>', capture_rel)
 
-def output_control_click(clicked):
+def output_control_click(clicked): # when output_control_btn is clicked
     output_control_btn['image'] = output_control_img_2_load
-    Thread(target=subprocess_launcher, args=['antenna_config_gui.pyw']).start()
+    Thread(target=subprocess_launcher, args=['antenna_config_gui.pyw']).start() # launch antenna configuration gui
 
-def output_control_rel(released):
+def output_control_rel(released): # when output_control_btn is released
     output_control_btn['image'] = output_control_img_1_load
 
-output_control_btn = tk.Button(mainFrame, image=output_control_img_1_load, text='output and control', width=194, height=50, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
+output_control_btn = tk.Button(mainFrame, image=output_control_img_1_load, text='output and control', width=194, height=50, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0) # create output and controls button
 output_control_btn.grid(row=0, padx=(0,0), pady=(7,0))
 output_control_btn.bind('<Button-1>', output_control_click)
 output_control_btn.bind('<ButtonRelease>', output_control_rel)
 
-def calibrate_sdr_click(clicked):
+def calibrate_sdr_click(clicked): # when calibrate_sdr_btn is clicked
     calibrate_sdr_btn['image'] = calibrate_sdr_img_2_load
-    Thread(target=subprocess_launcher, args=['calibrate_gui.pyw']).start()
+    Thread(target=subprocess_launcher, args=['calibrate_gui.pyw']).start() # launch calibrate gui
 
-def calibrate_sdr_rel(released):
+def calibrate_sdr_rel(released): # when calibrate_sdr_btn is released
     calibrate_sdr_btn['image'] = calibrate_sdr_img_1_load
 
-calibrate_sdr_btn = tk.Button(mainFrame, image=calibrate_sdr_img_1_load, text='calibrate sdr', width=194, height=50, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0)
+calibrate_sdr_btn = tk.Button(mainFrame, image=calibrate_sdr_img_1_load, text='calibrate sdr', width=194, height=50, borderwidth=0, relief=tk.SUNKEN, highlightthickness=0) # create calibrate button
 calibrate_sdr_btn.grid(row=0, padx=(0,0), pady=(156,0))
 calibrate_sdr_btn.bind('<Button-1>', calibrate_sdr_click)
 calibrate_sdr_btn.bind('<ButtonRelease>', calibrate_sdr_rel)
 
-root.mainloop()
+root.mainloop() # run tkinter window
