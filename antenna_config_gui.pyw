@@ -189,7 +189,7 @@ main_bg.grid(row=0)
 ## Common Functions ##
 ######################
 
-def update(): # update cuurent axis and dBm output labels
+def update(): # update dynamic variables
     while(True):
         curr_angle = cf.servo_theta_phi_get()
         data_phi_val = cf.get_sig_data()[1]
