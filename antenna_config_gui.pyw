@@ -363,4 +363,4 @@ snap_btn.bind('<ButtonRelease>', snap_rel)
 
 update_thr = Thread(target=update) # update data
 update_thr.start()
-root.mainloop() # run tkinter windows
+root.mainloop() # run tkinter window
